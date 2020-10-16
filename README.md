@@ -3,5 +3,8 @@
 
 ## description
 ### ディレクトリ
-sample...実験資料のサンプルコード
-kadai1...mnist3層ニューラルネット順伝搬の課題
+```
+kadai4nn
+├── sample...実験資料のサンプルコード
+└── kadai1...mnist3層ニューラルネット順伝搬の課題
+```
