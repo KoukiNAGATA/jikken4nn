@@ -3,48 +3,74 @@ import mnist
 import matplotlib.pyplot as plt
 from pylab import cm
 
-# images
-X = mnist.download_and_parse_mnist_file("train-images-idx3-ubyte.gz")
-X.shape # (60000, 28, 28)
-# labels
-Y = mnist.download_and_parse_mnist_file("train-labels-idx1-ubyte.gz")
+# Define dimension
+d = 784 # input
+m = 100 # middle
+c = 10 # output
+dev1 = np.sqrt(1/d)
+dev2 = np.sqrt(1/m)
 
-plt.figure()
-plt.imshow(x[0])
-plt.colorbar()
-plt.grid(False)
-plt.show()
+# Set seed
+np.random.seed(seed=4)
+
+# Initialize weight
+w1 = np.random.normal(0, dev1, (d, m))
+w2 = np.random.normal(0, dev2, (m, c))
+
+# Initialize bias
+b1 = np.random.normal(0, dev1, m)
+b2 = np.random.normal(0, dev2, c)
+
+# Functions
+def sigmoid(t):
+    a = 1 / (1 + np.exp(-t))
+    return a
+
+def softmax(a):
+    alpha = np.max(a)
+    y = np.exp(a-alpha)/np.sum(np.exp(a-alpha))
+    return y
 
 # Preprocessing
-X = X / 255.0
+def normalize(x):
+    x = x / 255.0
+    return x
 
-# input layer
-X = X.reshape(60000, 784)
+# Input layer
+def input_layer(x):
+    x = x.reshape(d)
+    return x
 
-# 
+# Forward propagation
+def forward(x):
+    x = input_layer(normalize(x))
+    y1 = sigmoid(np.dot(x, w1) + b1)
+    y2 = softmax(np.dot(y1, w2) + b2)
+    return y2
 
+#####################################################################
+
+# Download images
+X = mnist.download_and_parse_mnist_file("train-images-idx3-ubyte.gz")
+# Download labels
+Y = mnist.download_and_parse_mnist_file("train-labels-idx1-ubyte.gz")
+
+# Input number
 try:
-  # get number
-  val = input('Enter a number 0 or more to 9999 or less: ')
-  image = x[val]
+    val = int(input('Enter a number 0 or more to 9999 or less: '))
+    image = X[val]
+    if(val > 9999):
+        raise IndexError
 except IndexError:
-  # Error
-  print('Invalid number.')
-except :
-  # Error
-  print('Invalid string.')
+    # IndexError
+    print('Invalid index.')
+    raise
+except:
+    # Error
+    print('Invalid string.')
+    raise
 
-
-
-
-def sigmoid(a):
-  s = 1 / (1 + e**(-a))
-  return s
-
-#get seed
-seed = numpy.random.seed(40000)
-
-idx = 100
-plt.imshow(X[idx], cmap=cm.gray)
-plt.show()
-print (Y[idx])
+# Run task
+y = forward(image)
+num = np.argmax(y)
+print(num)
