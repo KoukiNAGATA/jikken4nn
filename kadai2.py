@@ -1,5 +1,4 @@
 import numpy as np
-import random
 import mnist
 import functions as func
 
@@ -11,7 +10,6 @@ batch_size = 100
 
 # Set seed
 np.random.seed(seed=4)
-random.seed(4)
 
 #####################################################################
 
