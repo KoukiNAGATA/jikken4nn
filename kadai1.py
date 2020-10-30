@@ -35,8 +35,6 @@ def forward(x):
 
 # Download images
 X = mnist.download_and_parse_mnist_file("train-images-idx3-ubyte.gz")
-# Download labels
-Y = mnist.download_and_parse_mnist_file("train-labels-idx1-ubyte.gz")
 
 # Input number
 try:
