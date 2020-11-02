@@ -6,6 +6,7 @@
 ```
 kadai4nn
 ├── sample...実験資料のサンプルコード
+├── functions.py...関数
 ├── kadai1.py...mnist3層ニューラルネット順伝搬の課題
 └── kadai2.py...クロスエントロピー誤差を計算
 └── kadai3.py...
