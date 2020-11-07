@@ -85,7 +85,6 @@ def train(x, l):
 
     # Initialize weights and biases
     w1, w2, b1, b2 = initialize()
-    print(w1)
 
     for i in range(EPOCH_SIZE):
         # Print the number of the epoch
@@ -99,9 +98,6 @@ def train(x, l):
         En = cross_entropy_loss(forward(get_mini_batch(x), w1, w2, b1, b2), get_mini_batch(l))
         # Print cross entropy loss at the end of the epoch
         print(f"Cross entropy loss: {En}")
-
-        print(w1)
-    print(w1)
 
     np.savez('parameter/kadai3', w1, w2, b1, b2)
     return
@@ -128,7 +124,6 @@ def learn(w1, w2, b1, b2, x, l):
     dEn_da1 = dEn_dX2 * (1 - y1) * y1
 
     # Back propagation(Fully connected layer)
-    dEn_dX1 = np.dot(dEn_da1, w1.T)
     dEn_dw1 = np.dot(x.T, dEn_da1)
     dEn_db1 = np.sum(dEn_da1 , axis=0)
 
