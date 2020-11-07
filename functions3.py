@@ -12,14 +12,6 @@ EPOCH_SIZE = 10 # number of epoch
 # Number of mini batch
 BATCH_SIZE = 100
 
-# Initialize weight
-w1 = np.random.normal(0, DEV1, (D, M))
-w2 = np.random.normal(0, DEV2, (M, C))
-
-# Initialize bias
-b1 = np.random.normal(0, DEV1, M)
-b2 = np.random.normal(0, DEV2, C)
-
 # Initialize learning rate
 lr = 0.01
 
@@ -28,16 +20,15 @@ np.random.seed(seed=4)
 
 #####################################################################
 
-# Forward propagation
-def forward(x):
-    y1 = sigmoid(np.dot(x, w1) + b1)
-    y2 = softmax(np.dot(y1, w2) + b2)
-    return y2
+def initialize():
+    # Initialize weights
+    w1 = np.random.normal(0, DEV1, (D, M))
+    w2 = np.random.normal(0, DEV2, (M, C))
 
-def forward(x, w1, w2, b1, b2):
-    y1 = sigmoid(np.dot(x, w1) + b1)
-    y2 = softmax(np.dot(y1, w2) + b2)
-    return y2
+    # Initialize biases
+    b1 = np.random.normal(0, DEV1, M)
+    b2 = np.random.normal(0, DEV2, C)
+    return (w1, w2, b1, b2)
 
 def preprocessing(x):
     x = normalize(x)
@@ -61,6 +52,12 @@ def get_one_hot(y):
 def get_mini_batch(x):
     return x[np.random.choice(x.shape[0], BATCH_SIZE, replace = False)]
 
+# Forward propagation
+def forward(x, w1, w2, b1, b2):
+    y1 = sigmoid(np.dot(x, w1) + b1)
+    y2 = softmax(np.dot(y1, w2) + b2)
+    return y2
+
 #####################################################################
 
 # Functions
@@ -82,25 +79,58 @@ def normalize(x):
 #####################################################################
 
 # Learning
-def learn(w1, w2, b1, b2, X, l_one_hot):
+def train(x, l):
+    # Get the size of dataset
+    image_size = x.shape[0]
+
+    # Initialize weights and biases
+    w1, w2, b1, b2 = initialize()
+    print(w1)
+
+    for i in range(EPOCH_SIZE):
+        # Print the number of the epoch
+        print(f"Epoch: {i+1}")
+
+        for j in range(int(x.shape[0] / BATCH_SIZE)):
+            # Learning
+            w1, w2, b1, b2 = learn(w1, w2, b1, b2, x, l)
+
+        # Calculate cross entropy loss
+        En = cross_entropy_loss(forward(get_mini_batch(x), w1, w2, b1, b2), get_mini_batch(l))
+        # Print cross entropy loss at the end of the epoch
+        print(f"Cross entropy loss: {En}")
+
+        print(w1)
+    print(w1)
+
+    np.savez('parameter/kadai3', w1, w2, b1, b2)
+    return
+
+def learn(w1, w2, b1, b2, x, l):
     # Input layer
     # Get mini batch
-    x = get_mini_batch(X)
-    l_one_hot = get_mini_batch(l_one_hot)
+    x = get_mini_batch(x)
+    l = get_mini_batch(l)
 
     # Forward propagation
     y1 = sigmoid(np.dot(x, w1) + b1)
     y2 = softmax(np.dot(y1, w2) + b2)
 
     # Back propagation(Softmax function and Cross entropy loss)
-    dEn_dak = (y2 - l_one_hot) / BATCH_SIZE
-    dEn_dw2 = np.dot(dEn_dak, y2.T)
-    dEn_db2 = np.sum(dEn_dak , axis=1)
+    dEn_da2 = (y2 - l) / BATCH_SIZE
 
-    # Bach propagation(Sigmoid function)
-    dEn_dx = dEn_dak * (1 - y1) * y1
-    dEn_dw1 = np.dot(dEn_dx, y1.T)
-    dEn_db1 = np.sum(dEn_dx , axis=1)
+    # Back propagation(Fully connected layer)
+    dEn_dX2 = np.dot(dEn_da2, w2.T)
+    dEn_dw2 = np.dot(y1.T, dEn_da2)
+    dEn_db2 = np.sum(dEn_da2 , axis=0)
+
+    # Back propagation(Sigmoid function)
+    dEn_da1 = dEn_dX2 * (1 - y1) * y1
+
+    # Back propagation(Fully connected layer)
+    dEn_dX1 = np.dot(dEn_da1, w1.T)
+    dEn_dw1 = np.dot(x.T, dEn_da1)
+    dEn_db1 = np.sum(dEn_da1 , axis=0)
 
     # Update weights and biases
     w1 -= lr * dEn_dw1
@@ -108,23 +138,3 @@ def learn(w1, w2, b1, b2, X, l_one_hot):
     b1 -= lr * dEn_db1
     b2 -= lr * dEn_db2
     return (w1, w2, b1, b2)
-
-def train(X, L):
-    # Get the size of dataset
-    image_size = X.shape[0]
-    # Transform L to one hot vector
-    l_one_hot = get_one_hot(L)
-
-    for i in range(EPOCH_SIZE):
-        # Print the number of the epoch
-        print(f"Epoch: {i+1}")
-
-        for j in range(int(X.shape[0] / BATCH_SIZE)):
-            # Learning
-            (w1, w2, b1, b2) = learn(w1, w2, b1, b2, X, l_one_hot)
-
-        # Calculate cross entropy loss
-        En = cross_entropy_loss((get_mini_batch(X), w1, w2, b1, b2), get_mini_batch(l_one_hot))
-        # Print cross entropy loss at the end of the epoch
-        print(f"Cross entropy loss: {En}")
-    return
