@@ -15,9 +15,6 @@ BATCH_SIZE = 100
 # Initialize learning rate
 lr = 0.01
 
-# Set seed
-np.random.seed(seed=4)
-
 #####################################################################
 
 def initialize():
@@ -48,9 +45,6 @@ def load_images(images):
 
 def get_one_hot(y):
     return np.eye(C)[y]
-
-def get_mini_batch(x):
-    return x[np.random.choice(x.shape[0], BATCH_SIZE, replace = False)]
 
 # Forward propagation
 def forward(x, w1, w2, b1, b2):
@@ -89,24 +83,25 @@ def train(x, l):
     for i in range(EPOCH_SIZE):
         # Print the number of the epoch
         print(f"Epoch: {i+1}")
+        En = np.zeros(0)
 
-        for j in range(int(x.shape[0] / BATCH_SIZE)):
+        for j in range(int(image_size / BATCH_SIZE)):
             # Learning
-            w1, w2, b1, b2 = learn(w1, w2, b1, b2, x, l)
+            w1, w2, b1, b2, En_tmp = learn(w1, w2, b1, b2, x, l)
+            En = np.append(En, En_tmp)
 
-        # Calculate cross entropy loss
-        En = cross_entropy_loss(forward(get_mini_batch(x), w1, w2, b1, b2), get_mini_batch(l))
-        # Print cross entropy loss at the end of the epoch
-        print(f"Cross entropy loss: {En}")
+        # Print cross entropy loss average of the epoch
+        En_average = np.average(En)
+        print(f"Cross entropy loss: {En_average}")
 
     np.savez('parameter/kadai3', w1, w2, b1, b2)
-    return
 
 def learn(w1, w2, b1, b2, x, l):
     # Input layer
     # Get mini batch
-    x = get_mini_batch(x)
-    l = get_mini_batch(l)
+    random_index = np.random.choice(x.shape[0], BATCH_SIZE, replace = False)
+    x = x[random_index]
+    l = l[random_index]
 
     # Forward propagation
     y1 = sigmoid(np.dot(x, w1) + b1)
@@ -132,4 +127,7 @@ def learn(w1, w2, b1, b2, x, l):
     w2 -= lr * dEn_dw2
     b1 -= lr * dEn_db1
     b2 -= lr * dEn_db2
-    return (w1, w2, b1, b2)
+
+    # Calculate cross entropy loss
+    En = cross_entropy_loss(forward(x, w1, w2, b1, b2), l)
+    return (w1, w2, b1, b2, En)
