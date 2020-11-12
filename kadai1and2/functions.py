@@ -60,7 +60,8 @@ def sigmoid(t):
 
 def softmax(a):
     alpha = np.max(a, axis = 1)
-    return np.exp(a-alpha[:,np.newaxis]) / np.sum(np.exp(a-alpha[:,np.newaxis]))
+    column_sum = np.sum(np.exp(a-alpha[:, np.newaxis]), axis = 1)
+    return np.exp(a-alpha[:,np.newaxis]) / column_sum[:, np.newaxis]
 
 def cross_entropy_loss(x, y):
     return  -np.sum(y * np.log(x+(1e-7))) / y.shape[0]
