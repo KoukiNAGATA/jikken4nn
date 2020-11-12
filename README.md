@@ -12,5 +12,5 @@ kadai4nn
 |    └── functions.py...関数
 ├── kadai3
 |    ├── kadai3.py...誤差逆伝播法による3層ニューラルネットワークの学習
-|    └── functions.py...関数
+|    └── functions3.py...関数
 ```
