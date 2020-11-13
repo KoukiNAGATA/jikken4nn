@@ -82,9 +82,6 @@ def cross_entropy_loss(x, y):
 def normalize(x):
     return x / 255.0
 
-def ReLU(x):
-    
-
 #####################################################################
 
 # Test
