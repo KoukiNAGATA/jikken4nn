@@ -1,5 +1,6 @@
 import numpy as np
 import mnist
+import matplotlib.pyplot as plt
 
 # Define const
 D = 784 # input
@@ -7,10 +8,10 @@ M = 100 # middle
 C = 10 # output labels
 DEV1 = np.sqrt(1/D)
 DEV2 = np.sqrt(1/M)
-EPOCH_SIZE = 10 # number of epoch
+EPOCH_SIZE = 100 # number of epoch
 
 # Number of mini batch
-BATCH_SIZE = 100
+BATCH_SIZE = 32
 
 # Initialize learning rate
 lr = 0.01
@@ -77,6 +78,9 @@ def train(x, l):
     # Get the size of dataset
     image_size = x.shape[0]
 
+    # Initialize the list of cross entropy loss
+    En_average_list = np.zeros(0)
+
     # Initialize weights and biases
     w1, w2, b1, b2 = initialize()
 
@@ -93,8 +97,11 @@ def train(x, l):
         # Print cross entropy loss average of the epoch
         En_average = np.average(En)
         print(f"Cross entropy loss: {En_average}")
+        En_average_list = np.append(En_average_list, En_average)
 
     np.savez('parameter/kadai3', w1, w2, b1, b2)
+    plt.plot(En_average_list)
+    plt.show()
 
 def learn(w1, w2, b1, b2, x, l):
     # Input layer
