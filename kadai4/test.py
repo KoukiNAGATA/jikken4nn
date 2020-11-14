@@ -8,6 +8,12 @@ C = 10 # output labels
 DEV1 = np.sqrt(1/D)
 DEV2 = np.sqrt(1/M)
 
+TEST_IMAGES = "t10k-images-idx3-ubyte.gz"
+TEST_LABELS = "t10k-labels-idx1-ubyte.gz"
+
+# Initialize dropout rate
+dropout_rate = 0.5
+
 #####################################################################
 
 # Preprocessing
@@ -64,9 +70,9 @@ def cross_entropy_loss(x, y):
 class Test4():
     def __init__(self):
         # Download test images
-        self.x = load_images("t10k-images-idx3-ubyte.gz")
+        self.x = load_images(TEST_IMAGES)
         # Download test labels
-        self.l = download("t10k-labels-idx1-ubyte.gz")
+        self.l = download(TEST_LABELS)
         # Download parameters
         parameters = np.load('parameter/kadai4.npz')
 
@@ -92,12 +98,13 @@ class Test4():
         correct_answer_rate = correct_number / image_size * 100
         print(f"Correct answer rate: {correct_answer_rate}%")
 
+#ReLU
 class TestA1():
     def __init__(self):
         # Download test images
-        self.x = load_images("t10k-images-idx3-ubyte.gz")
+        self.x = load_images(TEST_IMAGES)
         # Download test labels
-        self.l = download("t10k-labels-idx1-ubyte.gz")
+        self.l = download(TEST_LABELS)
         # Download parameters
         parameters = np.load('parameter/kadaia1.npz')
 
@@ -123,9 +130,45 @@ class TestA1():
         correct_answer_rate = correct_number / image_size * 100
         print(f"Correct answer rate: {correct_answer_rate}%")
 
+class TestA2():
+    def __init__(self):
+        # Download test images
+        self.x = load_images(TEST_IMAGES)
+        # Download test labels
+        self.l = download(TEST_LABELS)
+        # Download parameters
+        parameters = np.load('parameter/kadaia2.npz')
+
+        self.w1 = parameters['arr_0']
+        self.w2 = parameters['arr_1']
+        self.b1 = parameters['arr_2']
+        self.b2 = parameters['arr_3']
+
+    # Forward propagation
+    def forward(self, x):
+        y1 = ReLU(np.dot(x, self.w1) + self.b1)
+        y1 = self.dropout(y1)
+        y2 = softmax(np.dot(y1,self. w2) + self.b2)
+        return y2
+
+    # Dropout function
+    def dropout(self, t):
+        return t * (1 - dropout_rate)
+
+    def test(self):
+        image_size = len(self.x)
+        correct_number = 0
+        for i in range(image_size):
+            y = self.forward(self.x[i])
+            num = np.argmax(y)
+            if self.l[i] == num:
+                correct_number += 1
+        correct_answer_rate = correct_number / image_size * 100
+        print(f"Correct answer rate: {correct_answer_rate}%")
+
 #####################################################################
 
 # Run task
 if __name__ == "__main__":
-    t = TestA1()
+    t = TestA2()
     t.test()

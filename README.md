@@ -13,6 +13,12 @@ kadai4nn
 ├── kadai3
 |    ├── kadai3.py...誤差逆伝播法による3層ニューラルネットワークの学習
 |    └── functions3.py...関数
+├── kadai4...最終提出コード
+|    ├── test.py...画像識別器の学習
+|    └── train.py...識別の正当率
 ├── parameter
 |    ├── kadai3.npz...kadai3の学習結果。
+|    ├── kadai4.npz...課題4の学習結果。
+|    ├── kadaia1.npz...発展課題A1の学習結果。
+|    ├── kadaia2.npz...発展課題A2の学習結果。
 ```
