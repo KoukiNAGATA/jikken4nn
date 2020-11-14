@@ -10,11 +10,11 @@ DEV2 = np.sqrt(1/M)
 
 #####################################################################
 
+# Preprocessing
 def preprocessing(x):
     x = normalize(x)
     x = x.reshape(x.shape[0], D)
     return x
-
 
 def normalize(x):
     return x / 255.0
@@ -30,18 +30,19 @@ def load_images(images):
     x = preprocessing(x)
     return x
 
-# Forward propagation
-def forward(x, w1, w2, b1, b2):
-    y1 = sigmoid(np.dot(x, w1) + b1)
-    y2 = softmax(np.dot(y1, w2) + b2)
-    return y2
-
 #####################################################################
 
 # Functions
+
+# Sigmoid function
 def sigmoid(t):
     return 1 / (1 + np.exp(-t))
 
+# ReLU function
+def ReLU(t):
+    return t * (t > 0)
+
+# Softmax function
 def softmax(a):
     if(a.ndim == 2):
         # Get the maximum and the sum per column.
@@ -60,29 +61,71 @@ def cross_entropy_loss(x, y):
 #####################################################################
 
 # Test
-def test():
-    # Download test images
-    x = load_images("t10k-images-idx3-ubyte.gz")
-    # Download test labels
-    l = download("t10k-labels-idx1-ubyte.gz")
-    # Download parameters
-    parameters = np.load('parameter/kadai3.npz')
-    w1 = parameters['arr_0']
-    w2 = parameters['arr_1']
-    b1 = parameters['arr_2']
-    b2 = parameters['arr_3']
-    image_size = len(x)
-    correct_number = 0
-    for i in range(image_size):
-        y = forward(x[i], w1, w2, b1, b2)
-        num = np.argmax(y)
-        if l[i] == num:
-            correct_number += 1
-    correct_answer_rate = correct_number / image_size * 100
-    print(f"Correct answer rate: {correct_answer_rate}%")
+class Test4():
+    def __init__(self):
+        # Download test images
+        self.x = load_images("t10k-images-idx3-ubyte.gz")
+        # Download test labels
+        self.l = download("t10k-labels-idx1-ubyte.gz")
+        # Download parameters
+        parameters = np.load('parameter/kadai4.npz')
+
+        self.w1 = parameters['arr_0']
+        self.w2 = parameters['arr_1']
+        self.b1 = parameters['arr_2']
+        self.b2 = parameters['arr_3']
+
+    # Forward propagation
+    def forward(self, x):
+        y1 = sigmoid(np.dot(x, self.w1) + self.b1)
+        y2 = softmax(np.dot(y1,self. w2) + self.b2)
+        return y2
+
+    def test(self):
+        image_size = len(self.x)
+        correct_number = 0
+        for i in range(image_size):
+            y = self.forward(self.x[i])
+            num = np.argmax(y)
+            if self.l[i] == num:
+                correct_number += 1
+        correct_answer_rate = correct_number / image_size * 100
+        print(f"Correct answer rate: {correct_answer_rate}%")
+
+class TestA1():
+    def __init__(self):
+        # Download test images
+        self.x = load_images("t10k-images-idx3-ubyte.gz")
+        # Download test labels
+        self.l = download("t10k-labels-idx1-ubyte.gz")
+        # Download parameters
+        parameters = np.load('parameter/kadaia1.npz')
+
+        self.w1 = parameters['arr_0']
+        self.w2 = parameters['arr_1']
+        self.b1 = parameters['arr_2']
+        self.b2 = parameters['arr_3']
+
+    # Forward propagation
+    def forward(self, x):
+        y1 = ReLU(np.dot(x, self.w1) + self.b1)
+        y2 = softmax(np.dot(y1,self. w2) + self.b2)
+        return y2
+
+    def test(self):
+        image_size = len(self.x)
+        correct_number = 0
+        for i in range(image_size):
+            y = self.forward(self.x[i])
+            num = np.argmax(y)
+            if self.l[i] == num:
+                correct_number += 1
+        correct_answer_rate = correct_number / image_size * 100
+        print(f"Correct answer rate: {correct_answer_rate}%")
 
 #####################################################################
 
 # Run task
 if __name__ == "__main__":
-    test()
+    t = TestA1()
+    t.test()
