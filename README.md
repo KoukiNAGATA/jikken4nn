@@ -14,6 +14,7 @@ kadai4nn
 |    ├── kadai3.py...誤差逆伝播法による3層ニューラルネットワークの学習
 |    └── functions3.py...関数
 ├── kadai4...最終提出コード
+|    ├── contest.py...コンテストの基準を満たしたテストファイル
 |    ├── test.py...画像識別器の学習
 |    └── train.py...識別の正当率
 ├── parameter
