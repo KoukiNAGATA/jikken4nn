@@ -137,7 +137,7 @@ class TestA2():
         # Download test labels
         self.l = download(TEST_LABELS)
         # Download parameters
-        parameters = np.load('parameter/kadaia2.npz')
+        parameters = np.load('parameter/kadaia4_5.npz')
 
         self.w1 = parameters['arr_0']
         self.w2 = parameters['arr_1']
