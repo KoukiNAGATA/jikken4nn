@@ -96,9 +96,10 @@ class Test4():
             if self.l[i] == num:
                 correct_number += 1
         correct_answer_rate = correct_number / image_size * 100
+        print("Sigmoid")
         print(f"Correct answer rate: {correct_answer_rate}%")
 
-#ReLU
+# ReLU
 class TestA1():
     def __init__(self):
         # Download test images
@@ -128,9 +129,201 @@ class TestA1():
             if self.l[i] == num:
                 correct_number += 1
         correct_answer_rate = correct_number / image_size * 100
+        print("ReLU")
         print(f"Correct answer rate: {correct_answer_rate}%")
 
+# ReLU, Dropout
 class TestA2():
+    def __init__(self):
+        # Download test images
+        self.x = load_images(TEST_IMAGES)
+        # Download test labels
+        self.l = download(TEST_LABELS)
+        # Download parameters
+        parameters = np.load('parameter/kadaia2.npz')
+
+        self.w1 = parameters['arr_0']
+        self.w2 = parameters['arr_1']
+        self.b1 = parameters['arr_2']
+        self.b2 = parameters['arr_3']
+
+    # Forward propagation
+    def forward(self, x):
+        y1 = ReLU(np.dot(x, self.w1) + self.b1)
+        y1 = self.dropout(y1)
+        y2 = softmax(np.dot(y1,self. w2) + self.b2)
+        return y2
+
+    # Dropout function
+    def dropout(self, t):
+        return t * (1 - dropout_rate)
+
+    def test(self):
+        image_size = len(self.x)
+        correct_number = 0
+        for i in range(image_size):
+            y = self.forward(self.x[i])
+            num = np.argmax(y)
+            if self.l[i] == num:
+                correct_number += 1
+        correct_answer_rate = correct_number / image_size * 100
+        print("SGD")
+        print(f"Correct answer rate: {correct_answer_rate}%")
+
+# Momentum
+class TestA4_1():
+    def __init__(self):
+        # Download test images
+        self.x = load_images(TEST_IMAGES)
+        # Download test labels
+        self.l = download(TEST_LABELS)
+        # Download parameters
+        parameters = np.load('parameter/kadaia4_1.npz')
+
+        self.w1 = parameters['arr_0']
+        self.w2 = parameters['arr_1']
+        self.b1 = parameters['arr_2']
+        self.b2 = parameters['arr_3']
+
+    # Forward propagation
+    def forward(self, x):
+        y1 = ReLU(np.dot(x, self.w1) + self.b1)
+        y1 = self.dropout(y1)
+        y2 = softmax(np.dot(y1,self. w2) + self.b2)
+        return y2
+
+    # Dropout function
+    def dropout(self, t):
+        return t * (1 - dropout_rate)
+
+    def test(self):
+        image_size = len(self.x)
+        correct_number = 0
+        for i in range(image_size):
+            y = self.forward(self.x[i])
+            num = np.argmax(y)
+            if self.l[i] == num:
+                correct_number += 1
+        correct_answer_rate = correct_number / image_size * 100
+        print("Momentum")
+        print(f"Correct answer rate: {correct_answer_rate}%")
+
+# AdaGrad
+class TestA4_2():
+    def __init__(self):
+        # Download test images
+        self.x = load_images(TEST_IMAGES)
+        # Download test labels
+        self.l = download(TEST_LABELS)
+        # Download parameters
+        parameters = np.load('parameter/kadaia4_2.npz')
+
+        self.w1 = parameters['arr_0']
+        self.w2 = parameters['arr_1']
+        self.b1 = parameters['arr_2']
+        self.b2 = parameters['arr_3']
+
+    # Forward propagation
+    def forward(self, x):
+        y1 = ReLU(np.dot(x, self.w1) + self.b1)
+        y1 = self.dropout(y1)
+        y2 = softmax(np.dot(y1,self. w2) + self.b2)
+        return y2
+
+    # Dropout function
+    def dropout(self, t):
+        return t * (1 - dropout_rate)
+
+    def test(self):
+        image_size = len(self.x)
+        correct_number = 0
+        for i in range(image_size):
+            y = self.forward(self.x[i])
+            num = np.argmax(y)
+            if self.l[i] == num:
+                correct_number += 1
+        correct_answer_rate = correct_number / image_size * 100
+        print("AdaGrad")
+        print(f"Correct answer rate: {correct_answer_rate}%")
+
+# RMSProp
+class TestA4_3():
+    def __init__(self):
+        # Download test images
+        self.x = load_images(TEST_IMAGES)
+        # Download test labels
+        self.l = download(TEST_LABELS)
+        # Download parameters
+        parameters = np.load('parameter/kadaia4_3.npz')
+
+        self.w1 = parameters['arr_0']
+        self.w2 = parameters['arr_1']
+        self.b1 = parameters['arr_2']
+        self.b2 = parameters['arr_3']
+
+    # Forward propagation
+    def forward(self, x):
+        y1 = ReLU(np.dot(x, self.w1) + self.b1)
+        y1 = self.dropout(y1)
+        y2 = softmax(np.dot(y1,self. w2) + self.b2)
+        return y2
+
+    # Dropout function
+    def dropout(self, t):
+        return t * (1 - dropout_rate)
+
+    def test(self):
+        image_size = len(self.x)
+        correct_number = 0
+        for i in range(image_size):
+            y = self.forward(self.x[i])
+            num = np.argmax(y)
+            if self.l[i] == num:
+                correct_number += 1
+        correct_answer_rate = correct_number / image_size * 100
+        print("RMSProp")
+        print(f"Correct answer rate: {correct_answer_rate}%")
+
+# AdaDelta
+class TestA4_4():
+    def __init__(self):
+        # Download test images
+        self.x = load_images(TEST_IMAGES)
+        # Download test labels
+        self.l = download(TEST_LABELS)
+        # Download parameters
+        parameters = np.load('parameter/kadaia4_4.npz')
+
+        self.w1 = parameters['arr_0']
+        self.w2 = parameters['arr_1']
+        self.b1 = parameters['arr_2']
+        self.b2 = parameters['arr_3']
+
+    # Forward propagation
+    def forward(self, x):
+        y1 = ReLU(np.dot(x, self.w1) + self.b1)
+        y1 = self.dropout(y1)
+        y2 = softmax(np.dot(y1,self. w2) + self.b2)
+        return y2
+
+    # Dropout function
+    def dropout(self, t):
+        return t * (1 - dropout_rate)
+
+    def test(self):
+        image_size = len(self.x)
+        correct_number = 0
+        for i in range(image_size):
+            y = self.forward(self.x[i])
+            num = np.argmax(y)
+            if self.l[i] == num:
+                correct_number += 1
+        correct_answer_rate = correct_number / image_size * 100
+        print("AdaDelta")
+        print(f"Correct answer rate: {correct_answer_rate}%")
+
+# Adam
+class TestA4_5():
     def __init__(self):
         # Download test images
         self.x = load_images(TEST_IMAGES)
@@ -164,11 +357,33 @@ class TestA2():
             if self.l[i] == num:
                 correct_number += 1
         correct_answer_rate = correct_number / image_size * 100
+        print("Adam")
         print(f"Correct answer rate: {correct_answer_rate}%")
 
 #####################################################################
 
 # Run task
 if __name__ == "__main__":
-    t = TestA2()
-    t.test()
+    t4 = Test4()
+    t4.test()
+
+    t_a1 = TestA1()
+    t_a1.test()
+
+    t_a2 = TestA2()
+    t_a2.test()
+
+    t_a4_1 = TestA4_1()
+    t_a4_1.test()
+
+    t_a4_2 = TestA4_2()
+    t_a4_2.test()
+
+    t_a4_3 = TestA4_3()
+    t_a4_3.test()
+
+    t_a4_4 = TestA4_4()
+    t_a4_4.test()
+
+    t_a4_5 = TestA4_5()
+    t_a4_5.test()
