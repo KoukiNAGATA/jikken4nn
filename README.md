@@ -22,4 +22,7 @@ kadai4nn
 |    ├── kadai4.npz...課題4の学習結果。
 |    ├── kadaia1.npz...発展課題A1の学習結果。
 |    ├── kadaia2.npz...発展課題A2の学習結果。
+├── le4MNIST_answer.txt...コンテスト用データセット回答ラベル
+├── le4MNIST_x.txt...コンテスト用データセット画像
+├── parameter
 ```
