@@ -8,7 +8,6 @@ C = 10 # output labels
 DEV1 = np.sqrt(1/D)
 DEV2 = np.sqrt(1/M)
 
-TEST_IMAGES = "t10k-images-idx3-ubyte.gz"
 TEST_LABELS = "t10k-labels-idx1-ubyte.gz"
 
 # Initialize dropout rate
@@ -70,9 +69,8 @@ def cross_entropy_loss(x, y):
 class Contest():
     def __init__(self):
         # Download test images
-        self.x = load_images(TEST_IMAGES)
-        # Download test labels
-        self.l = download(TEST_LABELS)
+        self.x = np.loadtxt("le4MNIST_X.txt")
+        self.x = normalize(self.x)
         # Download parameters
         parameters = np.load('parameter/kadaia4_5.npz')
 
@@ -93,27 +91,19 @@ class Contest():
         return t * (1 - dropout_rate)
 
     def test(self):
-        y = self.forward(self.x)
-        num = np.argmax(y)
-        print(f"{num}")
+        image_size = len(self.x)
+        path = 'le4MNIST_answer.txt'
+        f = open(path, mode='w')
+        for i in range(image_size):
+            y = self.forward(self.x[i])
+            num = np.argmax(y)
+            f.write(str(num)+'\n')
+        f.close()
+        print('書き込みが完了しました')
 
 #####################################################################
 
 # Run task
 if __name__ == "__main__":
     t = Contest()
-    # Input number
-    try:
-        val = int(input('Enter a number 0 or more to 9999 or less: '))
-        t.x = t.x[val]
-        if(val > 9999):
-            raise IndexError
-    except IndexError:
-        # IndexError
-        print('Invalid index.')
-        raise
-    except:
-        # Error
-        print('Invalid string.')
-        raise
     t.test()
